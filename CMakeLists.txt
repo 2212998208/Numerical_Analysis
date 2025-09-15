@@ -11,6 +11,10 @@ set(LAGRANGE
     main.c
     src/lagrange.c
 )
+set(NEWTON
+    main.c
+    src/newton.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -19,11 +23,17 @@ set(TESTS_LAGRANGE
     src/lagrange.c
     tests/test_lagrange.c
 )
-
+set(TESTS_NEWTON
+    src/lagrange.c
+    src/newton.c
+    tests/test_newton.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
-               ${LAGRANGE})
+               ${LAGRANGE}
+               ${NEWTON}
+)
 
 target_include_directories(Numerical_Analysis PRIVATE include)
 
@@ -62,4 +72,12 @@ target_include_directories(Numerical_Analysis_tests_lagrange PRIVATE include)
 
 add_test(NAME Numerical_Analysis_tests_lagrange COMMAND Numerical_Analysis_tests_lagrange)
 
+#===================================================================
+
+#===================================================================
+# 测试newton
+add_executable(Numerical_Analysis_tests_newton
+        ${TESTS_NEWTON})
+target_include_directories(Numerical_Analysis_tests_newton PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_newton COMMAND Numerical_Analysis_tests_newton)
 #===================================================================

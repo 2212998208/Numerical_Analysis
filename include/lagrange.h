@@ -1,6 +1,7 @@
 #ifndef NUMERICAL_ANALYSIS_LAGRANGE_H
 #define NUMERICAL_ANALYSIS_LAGRANGE_H
-#include "integrator.h"
+#include <stddef.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,6 +35,7 @@ typedef struct {
     Lagrange_Err (*create_dataset)(DataSet **dataset, Point *points, size_t size);
     Lagrange_Err (*create_dataset_from_points)(DataSet **dataset, size_t size);
     void (*destroy_dataset)(DataSet *dataset);
+    Point *(*get_points)(DataSet **outDataset);
 } LagrangeAPI;
 
 

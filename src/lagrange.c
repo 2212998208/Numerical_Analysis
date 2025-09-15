@@ -132,11 +132,20 @@ Lagrange_Err create_dataset_from_points(DataSet **outDataset, size_t size) {
 DataSet *empty_dataset(void) {
     return (DataSet *)malloc(sizeof(DataSet));
 }
+
+// 将数据集中点集数据提取函数
+Point *get_points(DataSet **outDataset) {
+    if (!outDataset || !*outDataset) {
+        return NULL;
+    }
+    return (*outDataset)->points;
+}
 // 公共API
 const LagrangeAPI Lagrange = {
     lagrange_interpolate,
     empty_dataset,
     create_dataset,
     create_dataset_from_points,
-    destroy_dataset
+    destroy_dataset,
+    get_points
 };
