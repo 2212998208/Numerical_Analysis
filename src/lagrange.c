@@ -31,8 +31,11 @@ double lagrange_interpolate(DataSet *dataset, const double x) {
         double y_i = (dataset->points)[i].y;
 
         double L_k = calculate_basis_polynomial(dataset, (int)i, x);
-        total_sum += y_i * L_k;
+        if ((Lagrange_Err)L_k == LAGRANGE_ERR_DIVBYZERO) {
+            return LAGRANGE_ERR_DIVBYZERO; // 遇到除零错误，返回错误码
+        }
 
+        total_sum += y_i * L_k;
     }
 
     return total_sum;
@@ -50,7 +53,7 @@ static double calculate_basis_polynomial(const DataSet *dataset, const int k, co
 
         double denominator = x_k - x_i;
         if (fabs(denominator) < 1e-9) {
-        return LAGRANGE_ERR_DIVBYZERO;
+            return LAGRANGE_ERR_DIVBYZERO;
         }
         double numerator = x - x_i;
         product = product * (numerator / denominator);
