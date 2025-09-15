@@ -1,0 +1,65 @@
+cmake_minimum_required(VERSION 3.15)
+project(Numerical_Analysis C)
+
+set(CMAKE_C_STANDARD 11)
+
+set(INTEGRATOR
+    main.c
+    src/integrator.c
+)
+set(LAGRANGE
+    main.c
+    src/lagrange.c
+)
+set(TESTS_INTEGRATOR
+    src/integrator.c
+    tests/test_integrator.c
+)
+set(TESTS_LAGRANGE
+    src/lagrange.c
+    tests/test_lagrange.c
+)
+
+#===================================================================
+add_executable(Numerical_Analysis
+               ${INTEGRATOR}
+               ${LAGRANGE})
+
+target_include_directories(Numerical_Analysis PRIVATE include)
+
+#===================================================================
+
+# 使 MSVC 获得 M_PI / M_E
+add_definitions(-D_USE_MATH_DEFINES)
+
+if (MSVC)
+    target_compile_options(Numerical_Analysis PRIVATE /W4 /utf-8 /O2)
+else()
+    target_compile_options(Numerical_Analysis PRIVATE -Wall -Wextra -O3)
+endif()
+
+# 生成目录
+set_target_properties(Numerical_Analysis PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+enable_testing()
+#===================================================================
+# 测试integrator
+add_executable(Numerical_Analysis_tests_integrator
+               ${TESTS_INTEGRATOR})
+target_include_directories(Numerical_Analysis_tests_integrator PRIVATE include)
+
+add_test(NAME Numerical_Analysis_tests_integrator COMMAND Numerical_Analysis_tests_integrator)
+
+#===================================================================
+
+#===================================================================
+# 测试lagrange
+add_executable(Numerical_Analysis_tests_lagrange
+        ${TESTS_LAGRANGE})
+target_include_directories(Numerical_Analysis_tests_lagrange PRIVATE include)
+
+add_test(NAME Numerical_Analysis_tests_lagrange COMMAND Numerical_Analysis_tests_lagrange)
+
+#===================================================================
