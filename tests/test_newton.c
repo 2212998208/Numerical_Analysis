@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <math.h>
 #include <windows.h>
 
 #include <newton.h>
@@ -39,7 +38,7 @@ static Query linear_queries[] = { {2.0,5.0}, {1.0,3.0} };
 
 // 二次: y = x^2 (点: (1,1),(2,4),(3,9))
 static Point quadratic_points[] = { {1,1},{2,4},{3,9} };
-static Query quadratic_queries[] = { {2.5,6.25}, {3.0,9.0} };
+static Query quadratic_queries[] = { {2.5,6.25}, {3.0,9.0}, {7.0, 49.0}};
 
 // 常数: y = 10 (点: (5,10)) 任意x -> 10 (算法当前实现返回单点y)
 static Point constant_points[] = { {5,10} };
@@ -51,14 +50,14 @@ static Query duplicate_queries[] = { {1.5, 0.0} }; // expected 忽略
 
 // 乱序节点 (与 quadratic 相同集合不同顺序)
 static Point unordered_points[] = { {3,9}, {1,1}, {2,4} };
-static Query unordered_queries[] = { {2.5,6.25}, {2.0,4.0} };
+static Query unordered_queries[] = { {2.5,6.25}, {2.0,4.0}, {5.0, 25.0}};
 
 static NewtonTestCase cases[] = {
     {"线性插值",      linear_points,    2, linear_queries,    2, 1e-9, 1e-9, 0, NEWTON_OK},
-    {"二次插值",      quadratic_points, 3, quadratic_queries, 2, 1e-9, 1e-9, 0, NEWTON_OK},
+    {"二次插值",      quadratic_points, 3, quadratic_queries, 3, 1e-9, 1e-9, 0, NEWTON_OK},
     {"常数插值",      constant_points,  1, constant_queries,  2, 1e-9, 1e-9, 0, NEWTON_OK},
     {"重复X值",       duplicate_points, 3, duplicate_queries, 1, 1e-9, 1e-9, 1, NEWTON_ERR_DIVBYZERO},
-    {"乱序节点",      unordered_points, 3, unordered_queries, 2, 1e-9, 1e-9, 0, NEWTON_OK},
+    {"乱序节点",      unordered_points, 3, unordered_queries, 3, 1e-9, 1e-9, 0, NEWTON_OK},
 };
 
 // ------------------------- 测试执行 -------------------------
@@ -114,6 +113,7 @@ int test_newton(void) {
         if (case_ok) {
             ++passed;
         }
+        Newton.print_newton_dataset(&dataset);
         Newton.destroy_dataset(&dataset);
         if (!inDataset) {
         }else {

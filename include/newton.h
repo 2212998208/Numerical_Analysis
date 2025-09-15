@@ -1,6 +1,5 @@
 #ifndef NUMERICAL_ANALYSIS_NEWTON_H
 #define NUMERICAL_ANALYSIS_NEWTON_H
-#include <stddef.h>
 #include "lagrange.h"
 
 #ifdef __cplusplus
@@ -20,6 +19,7 @@ typedef struct {
     Newton_Err (*newton_interpolate)(NewtonDataSet **inNewtonDataSet, DataSet **intData, double x, double *outY);
     Newton_Err (*create_newton_dataset)(NewtonDataSet **outDataset, size_t size);
     Newton_Err (*destroy_dataset)(NewtonDataSet **outDataset);
+    Newton_Err (*print_newton_dataset)(const NewtonDataSet **outDataset);
 }NewtonAPI;
 
 

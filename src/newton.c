@@ -99,10 +99,27 @@ static Newton_Err newton_evaluate(NewtonDataSet *dataset, double x, double *outY
 
 
 
-
-
 // 打印插值器信息
+Newton_Err print_newton_dataset(const NewtonDataSet **outDataset) {
+    if (!*outDataset || !(*outDataset)->divided_differences || !(*outDataset)->x_nodes ||
+        (*outDataset)->x_nodes_size == 0 || (*outDataset)->x_nodes_size == 1) {
+        printf("Dataset is NULL\n");
+        return NEWTON_ERR_INVALID;
+    }
+    printf("Newton Dataset:\n");
+    printf("Size: %zu\n", (*outDataset)->x_nodes_size);
+    printf("X Nodes: ");
+    for (size_t i = 0; i < (*outDataset)->x_nodes_size; i++) {
+        printf("%f ", (*outDataset)->x_nodes[i]);
+    }
+    printf("\nDivided Differences: ");
+    for (size_t i = 0; i < (*outDataset)->x_nodes_size; i++) {
+        printf("%f ", (*outDataset)->divided_differences[i]);
+    }
+    printf("\n");
 
+    return NEWTON_OK;
+}
 
 
 
@@ -149,8 +166,8 @@ static Newton_Err compute_divided_differences(NewtonDataSet *dataset, Point *poi
     }
 
     // 计算均差系数
-    for (size_t j = 1; j < size; j++) {
-        for (size_t i = size - 1; i >= j; i--) {
+    for (size_t j = 1; j < size; j++) { // j表示当前计算的均差阶数
+        for (size_t i = size - 1; i >= j; i--) { // 从后向前计算，避免覆盖前面的值，因为dd[i]依赖于dd[i-1]。
             double numerator = dataset->divided_differences[i] - dataset->divided_differences[i - 1];
             double denominator = dataset->x_nodes[i] - dataset->x_nodes[i - j];
             if (fabs(denominator) < 1e-9 || fabs(denominator) == 0) {
@@ -170,5 +187,6 @@ static Newton_Err compute_divided_differences(NewtonDataSet *dataset, Point *poi
 const NewtonAPI Newton = {
     newton_interpolate,
     create_newton_dataset,
-    destroy_dataset
+    destroy_dataset,
+    print_newton_dataset
 };
