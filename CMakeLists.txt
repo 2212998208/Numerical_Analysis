@@ -15,6 +15,10 @@ set(NEWTON
     main.c
     src/newton.c
 )
+set(HERMITE
+    main.c
+    src/hermite.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -28,11 +32,16 @@ set(TESTS_NEWTON
     src/newton.c
     tests/test_newton.c
 )
+set(TESTS_HERMITE
+    src/hermite.c
+    tests/test_hermite.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
                ${LAGRANGE}
                ${NEWTON}
+               ${HERMITE}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -80,4 +89,12 @@ add_executable(Numerical_Analysis_tests_newton
         ${TESTS_NEWTON})
 target_include_directories(Numerical_Analysis_tests_newton PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_newton COMMAND Numerical_Analysis_tests_newton)
+#===================================================================
+
+#===================================================================
+# 测试hermite
+add_executable(Numerical_Analysis_tests_hermite
+            ${TESTS_HERMITE})
+target_include_directories(Numerical_Analysis_tests_hermite PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_hermite COMMAND Numerical_Analysis_tests_hermite)
 #===================================================================
