@@ -104,5 +104,9 @@ int run_all_tests(void) {
 int main(void) {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
-    return run_all_tests();
+    int test_ret = run_all_tests();
+    if (test_ret != 0) {
+        puts("部分测试失败，仍继续展示...");
+    }
+    return test_ret;
 }
