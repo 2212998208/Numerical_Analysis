@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/Numerical_Analysis_tests_lagrange.dir/src/lagrange.c.o CMakeFiles/Numerical_Analysis_tests_lagrange.dir/tests/test_lagrange.c.o -o Numerical_Analysis_tests_lagrange

@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/Numerical_Analysis_tests_newton.dir/src/lagrange.c.o CMakeFiles/Numerical_Analysis_tests_newton.dir/src/newton.c.o CMakeFiles/Numerical_Analysis_tests_newton.dir/tests/test_newton.c.o -o Numerical_Analysis_tests_newton
