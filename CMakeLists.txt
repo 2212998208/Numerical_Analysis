@@ -23,6 +23,10 @@ set(BISECTION
     main.c
     src/bisection.c
 )
+set(NEWTONRAPHSON
+    main.c
+    src/newton_raphson.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -44,6 +48,10 @@ set(TESTS_BISECTION
     src/bisection.c
     tests/test_bisection.c
 )
+set(TESTS_NEWTONRAPHSON
+    src/newton_raphson.c
+    tests/test_newtonraphson.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -51,6 +59,7 @@ add_executable(Numerical_Analysis
                ${NEWTON}
                ${HERMITE}
                ${BISECTION}
+               ${NEWTONRAPHSON}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -116,3 +125,10 @@ target_include_directories(Numerical_Analysis_tests_bisection PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_bisection COMMAND Numerical_Analysis_tests_bisection)
 #===================================================================
 
+#===================================================================
+# 测试newtonraphson
+add_executable(Numerical_Analysis_tests_newtonraphson
+            ${TESTS_NEWTONRAPHSON})
+target_include_directories(Numerical_Analysis_tests_newtonraphson PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_newtonraphson COMMAND Numerical_Analysis_tests_newtonraphson)
+#===================================================================
