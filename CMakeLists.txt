@@ -27,6 +27,10 @@ set(NEWTONRAPHSON
     main.c
     src/newton_raphson.c
 )
+set(SECANT
+    main.c
+    src/secant.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -52,6 +56,10 @@ set(TESTS_NEWTONRAPHSON
     src/newton_raphson.c
     tests/test_newtonraphson.c
 )
+set(TESTS_SECANT
+    src/secant.c
+    tests/test_secant.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -60,6 +68,7 @@ add_executable(Numerical_Analysis
                ${HERMITE}
                ${BISECTION}
                ${NEWTONRAPHSON}
+               ${SECANT}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -132,3 +141,12 @@ add_executable(Numerical_Analysis_tests_newtonraphson
 target_include_directories(Numerical_Analysis_tests_newtonraphson PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_newtonraphson COMMAND Numerical_Analysis_tests_newtonraphson)
 #===================================================================
+
+#===================================================================
+# 测试secant
+add_executable(Numerical_Analysis_tests_secant
+            ${TESTS_SECANT})
+target_include_directories(Numerical_Analysis_tests_secant PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_secant COMMAND Numerical_Analysis_tests_secant)
+#===================================================================
+

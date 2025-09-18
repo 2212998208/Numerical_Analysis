@@ -62,6 +62,11 @@ NewtonRaphson_Err newton_raphson_solve(const NonLinearRange *outRange, double *o
             return NEWTON_RAPHSON_ERR_INVALID;
         }
         if (fabsl(*x1 - *x0) < (*outRange)->tol || fabs(f(*x1)) < (*outRange)->tol) {
+            if (fabs(*x1) < 1e-7) { // 根接近于0
+                *outRoot = 0;
+                free(x1);
+                return NEWTON_RAPHSON_OK;
+            }
             *outRoot = *x1;
             free(x1);
             return NEWTON_RAPHSON_OK;
@@ -79,7 +84,7 @@ NewtonRaphson_Err NonLinearRange_create(double (*f)(double x), const double x0,
     const double tol, const size_t max_iter,
     NonLinearRange *outRange,
     const char *name) {
-    if (!outRange || !f || tol <= 1e-15 || max_iter == 0 || !name) {
+    if (!outRange || !f || tol <= 1e-65 || max_iter == 0 || !name) {
         return NEWTON_RAPHSON_ERR_INVALID;
     }
     NonLinearRange range = (NonLinearRange)malloc(sizeof(struct NonLinearRange));

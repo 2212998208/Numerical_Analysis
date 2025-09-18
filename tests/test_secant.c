@@ -1,16 +1,14 @@
+#include "secant.h"
 #include <math.h>
 #include <stdio.h>
 #include <windows.h>
-
-#include "newton_raphson.h"
-
-
 
 // 误差计算本地工具
 static inline double NA_ABS(double v) { return v < 0 ? -v : v; }
 static inline double NA_MAX(double a, double b) { return (a > b) ? a : b; }
 #define TEST_ABS_REL_CLOSE(val, ref, abs_tol, rel_tol) \
 (NA_ABS((val) - (ref)) <= NA_MAX((abs_tol), NA_ABS(ref) * (rel_tol)))
+
 
 // 函数定义
 double func1(double x) {return x*x - 4;}  // x=+-2
@@ -19,30 +17,30 @@ double func3(double x) {return cos(x) - x;} // x=0.7390851332151607
 double func4(double x) {return exp(x) - x - 1;} // x=0
 double func5(double x) {return exp(2 * x / M_PI) - exp(sin(x));} // x=pi/2
 
+
 // 用例描述
 typedef struct {
     const char *name;
     double (*func)(double x);
     double x0;
+    double x1;
     double tol;
     size_t max_iter;
     double expected_root; // 若 expect_error=1 则忽略
     int expect_error;       // 是否期望插值时出现错误
-    NewtonRaphson_Err expected_err; // 期望的错误码
+    Secant_Err expected_err; // 期望的错误码
 }BisectionTestCase;
 
-
 static BisectionTestCase cases [] = {
-    {"x^2 - 4", func1, 0.1, 1e-2, 8, 2.0, 0, NEWTON_RAPHSON_OK},
-    {"x^2 - 4", func1, -3, 1e-2, 8, -2.0, 0, NEWTON_RAPHSON_OK},
-    {"x^3 - x - 1", func2, 1, 1e-3, 8, 1.324717957244746, 0, NEWTON_RAPHSON_OK},
-    {"cos(x) - x", func3, 0.1, 1e-3, 8, 0.7390851332151607, 0, NEWTON_RAPHSON_OK},
-    {"e^x - x - 1", func4, 1, 1e-64, 1e5, 0.0, 0, NEWTON_RAPHSON_OK},  // 敏感边界
-    {"e^(2x/pi) - esin(x)",func5, 1.2, 1e-5, 1024, M_PI/2, 0, NEWTON_RAPHSON_OK}
+    {"x^2 - 4", func1, 0.1, 0.11, 1e-8, 16, 2.0, 0, SECANT_OK},
+    {"x^2 - 4", func1, -3, -2.8, 1e-8, 8, -2.0, 0, SECANT_OK},
+    {"x^3 - x - 1", func2, 1, 1.1, 1e-8, 8, 1.324717957244746, 0, SECANT_OK},
+    {"cos(x) - x", func3, 0.1, 0.5, 1e-8, 8, 0.7390851332151607, 0, SECANT_OK},
+    {"e^x - x - 1", func4, 1, 0.8, 1e-64, 2048, 0.0, 0, SECANT_OK},  // 敏感边界
+    {"e^(2x/pi) - esin(x)",func5, 1.5, 1.2, 1e-12, 1024, M_PI/2, 0, SECANT_OK}
 };
 
-
-int test_newtonraphson(void) {
+int test_secant(void) {
     const int N = (int)(sizeof(cases) / sizeof(cases[0]));
     int passed = 0;
     int failed = 0;
@@ -50,9 +48,9 @@ int test_newtonraphson(void) {
         const BisectionTestCase *tc = &cases[i];
 
         // 构造函数
-        NonLinearRange range = NULL;
-        NewtonRaphson_Err err = NewtonRaphson.NonLinearRange_create(tc->func,tc->x0,tc->tol,tc->max_iter,&range,tc->name);
-        if (err != NEWTON_RAPHSON_OK) {
+        NonLinearScant secant = NULL;
+        Secant_Err err = Secant.NonLinearScant_create(tc->func,tc->x0,tc->x1,tc->tol,tc->max_iter,&secant,tc->name);
+        if (err != SECANT_OK) {
             if (tc->expect_error && err == tc->expected_err) {
                 printf("[TEST] %-8s 构建区间期望失败: err=%d PASS\n", tc->name, err);
                 passed++;
@@ -64,8 +62,8 @@ int test_newtonraphson(void) {
 
         // 数值解
         double root = 0.0;
-        err = NewtonRaphson.newton_raphson_solve(&range, &root);
-        if (err != NEWTON_RAPHSON_OK) {
+        err = Secant.secant_solve(&secant, &root);
+        if (err != SECANT_OK) {
             if (tc->expect_error && err == tc->expected_err) {
                 printf("[TEST] %-8s 求解期望失败: err=%d PASS\n", tc->name, err);
                 passed++;
@@ -87,8 +85,8 @@ int test_newtonraphson(void) {
         }
 
         // 析构函数
-        err = NewtonRaphson.NonLinearRange_destroy(&range);
-        if (err != NEWTON_RAPHSON_OK) {
+        err = Secant.NonLinearScant_destroy(&secant);
+        if (err != SECANT_OK) {
             printf("[TEST] %-8s 析构失败: err=%d FAIL\n", tc->name, err);
             failed++;
         }
@@ -101,5 +99,5 @@ int test_newtonraphson(void) {
 int main(int argc, char *argv[]) {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
-    return test_newtonraphson();
+    return test_secant();
 }
