@@ -17,7 +17,8 @@ double func1(double x) {return x*x - 4;}  // x=+-2
 double func2(double x) {return x*x*x - x - 1;} // x=1.324717957244746
 double func3(double x) {return cos(x) - x;} // x=0.7390851332151607
 double func4(double x) {return exp(x) - x - 1;} // x=0
-double func5(double x) {return exp(2*x/M_PI) - exp(sin(x));} // x=0
+double func5(double x) {return exp(2 * x / M_PI) - exp(sin(x));} // x=pi/2
+
 // 用例描述
 typedef struct {
     const char *name;
@@ -34,9 +35,9 @@ typedef struct {
 static BisectionTestCase cases [] = {
     {"x^2 - 4", func1, 0.1, 1e-2, 8, 2.0, 0, NEWTON_RAPHSON_OK},
     {"x^2 - 4", func1, -3, 1e-2, 8, -2.0, 0, NEWTON_RAPHSON_OK},
-    {"x^3 - x - 1", func2, 1, 1e-2, 8, 1.324717957244746, 0, NEWTON_RAPHSON_OK},
-    {"cos(x) - x", func3, 0.1, 1e-2, 8, 0.7390851332151607, 0, NEWTON_RAPHSON_OK},
-    {"e^x - x - 1", func4, 1, 1e-9, 1024, 0.0, 0, NEWTON_RAPHSON_OK},  // 敏感边界
+    {"x^3 - x - 1", func2, 1, 1e-3, 8, 1.324717957244746, 0, NEWTON_RAPHSON_OK},
+    {"cos(x) - x", func3, 0.1, 1e-3, 8, 0.7390851332151607, 0, NEWTON_RAPHSON_OK},
+    {"e^x - x - 1", func4, 1, 1e-10, 1024, 0.0, 0, NEWTON_RAPHSON_OK},  // 敏感边界
     {"e^(2x/pi) - esin(x)",func5, 1.2, 1e-5, 1024, M_PI/2, 0, NEWTON_RAPHSON_OK}
 };
 
