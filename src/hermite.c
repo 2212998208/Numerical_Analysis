@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-static Hermite_Err hermite_compute_coefficients(HermiteInterpolator *interpolator, HermiteDataset *inDataset);
+static Hermite_Err hermite_compute_coefficients(const HermiteInterpolator *interpolator, const HermiteDataset *inDataset);
 static struct HermitePoint hermite_point(double x, double y, double dy);
 
 struct HermitePoint {
@@ -28,7 +28,7 @@ struct HermiteInterpolator {
 
 // 创建插值器
 Hermite_Err hermite_create_interpolator(HermiteDataset *inDataset, HermiteInterpolator *outInterpolator) {
-    if (!*inDataset || (*inDataset)->size == 0) {
+    if (!(*inDataset) || (*inDataset)->size == 0) {
         return HERMITE_ERR_INVALID;
     }
 
@@ -64,7 +64,7 @@ Hermite_Err hermite_create_interpolator(HermiteDataset *inDataset, HermiteInterp
     interpolator->z_node = z_nodes;
     interpolator->size = N;
 
-    Hermite_Err err = hermite_compute_coefficients(&interpolator, inDataset);
+    const Hermite_Err err = hermite_compute_coefficients(&interpolator, inDataset);
     if (err != HERMITE_OK) {
         free(z_nodes);
         free(coefficients);
@@ -95,29 +95,42 @@ Hermite_Err hermite_destroy_interpolator(HermiteInterpolator *InInterpolator) {
 
 
 // 均差系数计算
-static Hermite_Err hermite_compute_coefficients(HermiteInterpolator *interpolator, HermiteDataset *inDataset) {
+static Hermite_Err hermite_compute_coefficients(const HermiteInterpolator *interpolator, const HermiteDataset *inDataset) {
     if (!*interpolator || !*inDataset || (*inDataset)->size == 0 ||
         (*interpolator)->size != 2 * (*inDataset)->size ||
         (*interpolator)->size == 0) {
         return HERMITE_ERR_INVALID;
     }
 
-    const size_t loop_size = (*interpolator)->size;
+    const size_t N = (*interpolator)->size;
+    const size_t n = (*inDataset)->size;
     double *coefficients = (*interpolator)->coefficients;
     const double *z_nodes = (*interpolator)->z_node;
 
-    for (size_t i = 1; i < loop_size; i++) {
-        for (size_t j = loop_size - 1; j >= i; j--) {
+    // 初始值再赋值
+    for (size_t i = 0; i < n; i++) {
+        coefficients[2 * i] = (*inDataset)->points[i].y;
+        coefficients[2 * i + 1] = (*inDataset)->points[i].y;
+    }
+
+    // 计算一阶均差
+    for (size_t i = N - 1; i > 0; i--) {
+        if (i % 2 != 0) {
+            coefficients[i] = (*inDataset)->points[i/2].dy;
+        }else {
+            coefficients[i] = (coefficients[i] - coefficients[i - 1]) / (z_nodes[i] - z_nodes[i - 1]);
+        }
+    }
+
+
+    for (size_t i = 2; i < N; i++) {
+        for (size_t j = N - 1; j >= i; j--) {
             double numerator = coefficients[j] - coefficients[j - 1];
             double denominator = z_nodes[j] - z_nodes[j - i];
-            if (fabs(denominator) < 1e-9 || fabs(denominator) == 0) {
-                // 处理重根的情况
-                size_t original_index = j / 2;
-                coefficients[j] = (*inDataset)->points[original_index].dy;
-            } else {
-                coefficients[j] = numerator / denominator;
+            if (fabs(denominator) < 1e-9) {
+                return HERMITE_ERR_DIVBYZERO;
             }
-
+            coefficients[j] = numerator / denominator;
         }
     }
 
@@ -170,7 +183,7 @@ Hermite_Err destroy_hermite_dataset(HermiteDataset *inDataset) {
 
 // 求值函数
 Hermite_Err hermite_evaluate(const HermiteInterpolator *InInterpolator, const double x, double *outY, double *outDy) {
-    if (!*InInterpolator || (*InInterpolator)->size == 0) {
+    if (!(*InInterpolator) || (*InInterpolator)->size == 0) {
         return HERMITE_ERR_INVALID;
     }
 
@@ -181,9 +194,9 @@ Hermite_Err hermite_evaluate(const HermiteInterpolator *InInterpolator, const do
     double result = coefficients[N - 1];
     double derivative = 0.0;
 
-    for (size_t i = N - 1; i > 0; i--) {
-        derivative = derivative * (x - z_nodes[i - 1]) + result;
-        result = result * (x - z_nodes[i - 1]) + coefficients[i - 1];
+    for (int i = (int)N - 2; i >= 0; i--) {
+        derivative = derivative * (x - z_nodes[i]) + result;
+        result = result * (x - z_nodes[i]) + coefficients[i];
     }
 
     if (outY) {

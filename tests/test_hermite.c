@@ -47,9 +47,16 @@ static Query linear_queries[] = { {2.0,5.0, 2.0}, {1.0,3.0, 2.0} };
 static Point quadratic_points[] = { {1,1,2}, {2,4,4}, {3,9,6} };
 static Query quadratic_queries[] = { {2.5,6.25,5.0}, {3.0,9.0,6.0}, {7.0, 49.0,14.0}};
 
+// 非线性三角函数 y=sin(x) (点: (0,0),(π/2,1),(π,0),(3π/2,-1),(2π,0), dy=cos(x))
+static Point trig_points[] = { {0,0,1}, {1.57079632679,1,0}, {3.14159265359,0,-1},
+                              {4.71238898038,-1,0}, {6.28318530718,0,1} };
+static Query trig_queries[] = { {3.0,0.14112000806,-0.9899924966},
+                               {4.0,-0.75680249531,-0.65364362086},
+                               {5.0,-0.95892427466,0.28366218546} };
 static HermiteTestCase cases[] = {
     {"线性插值", linear_points, 2, linear_queries, 2, 1e-9, 1e-9, 0, HERMITE_OK},
-    {"二次插值", quadratic_points, 3, quadratic_queries, 3, 1e-9, 1e-9, 0, HERMITE_OK}
+    {"二次插值", quadratic_points, 3, quadratic_queries, 3, 1e-9, 1e-9, 0, HERMITE_OK},
+    {"三角函数sin(x)", trig_points, 5, trig_queries, 3, 1e-2, 1e-2, 0, HERMITE_OK}
 };
 
 
@@ -60,14 +67,20 @@ int test_hermite(void) {
     int passed = 0;
 
     for (int i = 0; i < N; ++i) {
-        HermiteTestCase *tc = &cases[i];
+        const HermiteTestCase *tc = &cases[i];
 
         // 创建数据集
         HermiteDataset dataset = NULL;
-        dataset = Hermite.create_hermite_dataset(tc->point_count,
-                                                        (const double[]){tc->points[0].x, tc->points[1].x},
-                                                        (const double[]){tc->points[0].y, tc->points[1].y},
-                                                        (const double[]){tc->points[0].dy, tc->points[1].dy});
+        double x_vals[tc->point_count];
+        double y_vals[tc->point_count];
+        double dy_vals[tc->point_count];
+        for (int k = 0; k < tc->point_count; k++) {
+            x_vals[k] = tc->points[k].x;
+            y_vals[k] = tc->points[k].y;
+            dy_vals[k] = tc->points[k].dy;
+        }
+
+        dataset = Hermite.create_hermite_dataset(tc->point_count, x_vals, y_vals, dy_vals);
         if (!dataset) {
             printf("[TEST] %-8s 构建数据集失败: err=%d FAIL\n", tc->name, HERMITE_ERR_INVALID);
             failed++;
