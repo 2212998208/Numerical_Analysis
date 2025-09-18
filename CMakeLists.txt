@@ -19,6 +19,10 @@ set(HERMITE
     main.c
     src/hermite.c
 )
+set(BISECTION
+    main.c
+    src/bisection.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -36,12 +40,17 @@ set(TESTS_HERMITE
     src/hermite.c
     tests/test_hermite.c
 )
+set(TESTS_BISECTION
+    src/bisection.c
+    tests/test_bisection.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
                ${LAGRANGE}
                ${NEWTON}
                ${HERMITE}
+               ${BISECTION}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -98,3 +107,12 @@ add_executable(Numerical_Analysis_tests_hermite
 target_include_directories(Numerical_Analysis_tests_hermite PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_hermite COMMAND Numerical_Analysis_tests_hermite)
 #===================================================================
+
+#===================================================================
+# 测试bisection
+add_executable(Numerical_Analysis_tests_bisection
+            ${TESTS_BISECTION})
+target_include_directories(Numerical_Analysis_tests_bisection PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_bisection COMMAND Numerical_Analysis_tests_bisection)
+#===================================================================
+
