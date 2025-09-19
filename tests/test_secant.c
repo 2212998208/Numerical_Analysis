@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <windows.h>
 
-// 误差计算本地工具
-static inline double NA_ABS(double v) { return v < 0 ? -v : v; }
-static inline double NA_MAX(double a, double b) { return (a > b) ? a : b; }
-#define TEST_ABS_REL_CLOSE(val, ref, abs_tol, rel_tol) \
-(NA_ABS((val) - (ref)) <= NA_MAX((abs_tol), NA_ABS(ref) * (rel_tol)))
+    // 误差计算本地工具
+    static inline double NA_ABS(double v) { return v < 0 ? -v : v; }
+    static inline double NA_MAX(double a, double b) { return (a > b) ? a : b; }
+    #define TEST_ABS_REL_CLOSE(val, ref, abs_tol, rel_tol) \
+    (NA_ABS((val) - (ref)) <= NA_MAX((abs_tol), NA_ABS(ref) * (rel_tol)))
 
 
 // 函数定义

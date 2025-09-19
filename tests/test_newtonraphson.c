@@ -33,8 +33,8 @@ typedef struct {
 
 
 static BisectionTestCase cases [] = {
-    {"x^2 - 4", func1, 0.1, 1e-2, 8, 2.0, 0, NEWTON_RAPHSON_OK},
-    {"x^2 - 4", func1, -3, 1e-2, 8, -2.0, 0, NEWTON_RAPHSON_OK},
+    {"x^2 - 4", func1, 0.1, 1e-5, 8, 2.0, 0, NEWTON_RAPHSON_OK},
+    {"x^2 - 4", func1, -3, 1e-5, 8, -2.0, 0, NEWTON_RAPHSON_OK},
     {"x^3 - x - 1", func2, 1, 1e-3, 8, 1.324717957244746, 0, NEWTON_RAPHSON_OK},
     {"cos(x) - x", func3, 0.1, 1e-3, 8, 0.7390851332151607, 0, NEWTON_RAPHSON_OK},
     {"e^x - x - 1", func4, 1, 1e-64, 1e5, 0.0, 0, NEWTON_RAPHSON_OK},  // 敏感边界

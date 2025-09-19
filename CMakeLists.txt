@@ -31,6 +31,10 @@ set(SECANT
     main.c
     src/secant.c
 )
+set(SA
+    main.c
+    src/successive_approximation.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -60,6 +64,10 @@ set(TESTS_SECANT
     src/secant.c
     tests/test_secant.c
 )
+set(TESTS_SA
+    src/successive_approximation.c
+    tests/test_successiveapproximation.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -69,6 +77,7 @@ add_executable(Numerical_Analysis
                ${BISECTION}
                ${NEWTONRAPHSON}
                ${SECANT}
+               ${SA}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -150,3 +159,10 @@ target_include_directories(Numerical_Analysis_tests_secant PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_secant COMMAND Numerical_Analysis_tests_secant)
 #===================================================================
 
+#===================================================================
+# 测试successive approximation
+add_executable(Numerical_Analysis_tests_sa
+            ${TESTS_SA})
+target_include_directories(Numerical_Analysis_tests_sa PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_sa COMMAND Numerical_Analysis_tests_sa)
+#===================================================================
