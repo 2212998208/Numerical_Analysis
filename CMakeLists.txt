@@ -39,6 +39,10 @@ set(TRAPEZOIDAL
     src/Trapezoidal.c
     main.c
 )
+set(SI
+    main.c
+    src/simpson.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -76,6 +80,10 @@ set(TESTS_TI
     src/Trapezoidal.c
     tests/test_trapezoidal.c
 )
+set(TESTS_SI
+    src/simpson.c
+    tests/test_simpson.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -87,6 +95,7 @@ add_executable(Numerical_Analysis
                ${SECANT}
                ${SA}
                ${TRAPEZOIDAL}
+               ${SI}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -182,4 +191,12 @@ add_executable(Numerical_Analysis_tests_ti
             ${TESTS_TI})
 target_include_directories(Numerical_Analysis_tests_ti PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_ti COMMAND Numerical_Analysis_tests_ti)
+#===================================================================
+
+#===================================================================
+# 测试simpson
+add_executable(Numerical_Analysis_tests_si
+            ${TESTS_SI})
+target_include_directories(Numerical_Analysis_tests_si PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_si COMMAND Numerical_Analysis_tests_si)
 #===================================================================
