@@ -35,6 +35,10 @@ set(SA
     main.c
     src/successive_approximation.c
 )
+set(TRAPEZOIDAL
+    src/Trapezoidal.c
+    main.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -68,6 +72,10 @@ set(TESTS_SA
     src/successive_approximation.c
     tests/test_successiveapproximation.c
 )
+set(TESTS_TI
+    src/Trapezoidal.c
+    tests/test_trapezoidal.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -78,6 +86,7 @@ add_executable(Numerical_Analysis
                ${NEWTONRAPHSON}
                ${SECANT}
                ${SA}
+               ${TRAPEZOIDAL}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -165,4 +174,12 @@ add_executable(Numerical_Analysis_tests_sa
             ${TESTS_SA})
 target_include_directories(Numerical_Analysis_tests_sa PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_sa COMMAND Numerical_Analysis_tests_sa)
+#===================================================================
+
+#===================================================================
+# 测试trapezoidal
+add_executable(Numerical_Analysis_tests_ti
+            ${TESTS_TI})
+target_include_directories(Numerical_Analysis_tests_ti PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_ti COMMAND Numerical_Analysis_tests_ti)
 #===================================================================
