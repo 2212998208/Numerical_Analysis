@@ -43,6 +43,10 @@ set(SI
     main.c
     src/simpson.c
 )
+set(DS
+    main.c
+    src/double_simpson.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -83,6 +87,10 @@ set(TESTS_TI
 set(TESTS_SI
     src/simpson.c
     tests/test_simpson.c
+)
+set(TESTS_DS
+    src/double_simpson.c
+    tests/test_doublesimpson.c
 )
 #===================================================================
 add_executable(Numerical_Analysis
@@ -200,3 +208,12 @@ add_executable(Numerical_Analysis_tests_si
 target_include_directories(Numerical_Analysis_tests_si PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_si COMMAND Numerical_Analysis_tests_si)
 #===================================================================
+
+#===================================================================
+# 测试double simpson
+add_executable(Numerical_Analysis_tests_ds
+            ${TESTS_DS})
+target_include_directories(Numerical_Analysis_tests_ds PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_ds COMMAND Numerical_Analysis_tests_ds)
+#===================================================================
+
