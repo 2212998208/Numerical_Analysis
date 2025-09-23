@@ -47,6 +47,10 @@ set(DS
     main.c
     src/double_simpson.c
 )
+set(EULER
+    main.c
+    src/euler.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -92,6 +96,10 @@ set(TESTS_DS
     src/double_simpson.c
     tests/test_doublesimpson.c
 )
+set(TESTS_EULER
+    src/euler.c
+    tests/test_euler.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -104,6 +112,8 @@ add_executable(Numerical_Analysis
                ${SA}
                ${TRAPEZOIDAL}
                ${SI}
+               ${DS}
+               ${EULER}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -215,5 +225,13 @@ add_executable(Numerical_Analysis_tests_ds
             ${TESTS_DS})
 target_include_directories(Numerical_Analysis_tests_ds PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_ds COMMAND Numerical_Analysis_tests_ds)
+#===================================================================
+
+#===================================================================
+# 测试euler
+add_executable(Numerical_Analysis_tests_euler
+            ${TESTS_EULER})
+target_include_directories(Numerical_Analysis_tests_euler PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_euler COMMAND Numerical_Analysis_tests_euler)
 #===================================================================
 
