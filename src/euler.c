@@ -60,10 +60,35 @@ Euler_Err euler_solve(const Euler *inEuler, size_t max_iter, double *xn) {
 
 }
 
+// 修正Euler法
+Euler_Err modified_euler_solve(const Euler *inEuler, size_t max_iter, double *xn) {
+    if (inEuler == NULL || *inEuler == NULL || xn == NULL) {
+        return EULER_INVALID;
+    }
+
+    double x0 = (*inEuler)->x0;
+    double t0 = (*inEuler)->t0;
+
+    double delta_t = (*inEuler)->Δt;
+    double (*dx2dt)(double x, double t) = (*inEuler)->dx2dt;
+
+    for (size_t i = 0; i < max_iter; i++) {
+        double k1 = dx2dt(x0, t0);
+        double k2 = dx2dt(x0 + delta_t * k1, t0 + delta_t);
+        *xn = x0 + (delta_t / 2.0) * (k1 + k2);
+        x0 = *xn;
+        t0 += delta_t;
+    }
+
+    return EULER_OK;
+
+}
+
 
 // 公共API
 const EulerAPI EULER  = {
     .euler_create = euler_create,
     .euler_destroy = euler_destroy,
-    .euler_solve = euler_solve
+    .euler_solve = euler_solve,
+    .modified_euler_solve = modified_euler_solve
 };

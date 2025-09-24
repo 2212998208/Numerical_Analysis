@@ -51,6 +51,10 @@ set(EULER
     main.c
     src/euler.c
 )
+set(RK4
+    main.c
+    src/RK4.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -100,6 +104,10 @@ set(TESTS_EULER
     src/euler.c
     tests/test_euler.c
 )
+set(TESTS_RK4
+    src/RK4.c
+    tests/test_RK4.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -114,6 +122,7 @@ add_executable(Numerical_Analysis
                ${SI}
                ${DS}
                ${EULER}
+               ${RK4}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -233,5 +242,13 @@ add_executable(Numerical_Analysis_tests_euler
             ${TESTS_EULER})
 target_include_directories(Numerical_Analysis_tests_euler PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_euler COMMAND Numerical_Analysis_tests_euler)
+#===================================================================
+
+#===================================================================
+# 测试RK4
+add_executable(Numerical_Analysis_tests_rk4
+            ${TESTS_RK4})
+target_include_directories(Numerical_Analysis_tests_rk4 PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_rk4 COMMAND Numerical_Analysis_tests_rk4)
 #===================================================================
 

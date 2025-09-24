@@ -46,9 +46,12 @@ int test_euler() {
 
         // 构造函数
         Euler euler = NULL;
+        Euler modified_euler = NULL;
         Euler_Err err = EULER.euler_create(&euler, tc->dx2dt, tc->x0, tc->t0, tc->Δt);
-        if (err != EULER_OK) {
-            if (tc->expect_error && err == tc->expected_err && err == EULER_INVALID) {
+        Euler_Err modified_err = EULER.euler_create(&modified_euler, tc->dx2dt, tc->x0, tc->t0, tc->Δt);
+        if (err != EULER_OK || modified_err != EULER_OK) {
+            if (tc->expect_error && err == tc->expected_err && err == EULER_INVALID || modified_err == EULER_INVALID
+                && modified_err == tc->expected_err && tc->expect_error) {
                 printf("[TEST] %s: 构造函数参数错误: err=%d  PASSED \n", tc->name, err);
                 passed++;
                 continue;
@@ -60,26 +63,33 @@ int test_euler() {
 
         // 求解
         double xn = 0.0;
+        double modified_xn = 0.0;
         err = EULER.euler_solve(&euler, tc->max_iter, &xn);
-        if (err != EULER_OK) {
-            if (tc->expect_error && err == tc->expected_err && err == EULER_INVALID) {
+        modified_err = EULER.modified_euler_solve(&modified_euler, tc->max_iter, &modified_xn);
+        if (err != EULER_OK || modified_err != EULER_OK) {
+            if (tc->expect_error && err == tc->expected_err && err == EULER_INVALID
+                || tc->expect_error && modified_err == EULER_INVALID && modified_err == tc->expected_err) {
                 printf("[TEST] %s: 求解函数参数错误: err=%d  PASSED\n", tc->name, err);
                 passed++;
                 EULER.euler_destroy(&euler);
+                EULER.euler_destroy(&modified_euler);
                 continue;
             }
             printf("[TEST] %s: 求解函数错误: err=%d, expected_err=%d  FAILED\n", tc->name, err, tc->expected_err);
             failed++;
             EULER.euler_destroy(&euler);
+            EULER.euler_destroy(&modified_euler);
             continue;
         }
 
         // 验证结果
         printf("[TEST] %-25s 计算结果: xn=%.10f, 期望结果: %.10f  CALCULATED\n", tc->name, xn, tc->expected_xn);
+        printf("[TEST] %-25s 修正结果: modified_xn=%.10f, 期望结果: %.10f  CALCULATED\n", tc->name, modified_xn, tc->expected_xn);
         passed++;
 
         // 析构函数
         EULER.euler_destroy(&euler);
+        EULER.euler_destroy(&modified_euler);
     }
 
     printf("[TEST] 通过 %d / %d 个用例\n", passed, passed + failed);

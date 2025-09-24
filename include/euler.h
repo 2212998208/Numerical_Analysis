@@ -19,6 +19,7 @@ typedef struct Euler {
     Euler_Err (*euler_create) (Euler *outEuler, double (*dx2dt)(double x, double t), double x0, double t0, double Δt);
     Euler_Err (*euler_destroy) (Euler *euler);
     Euler_Err (*euler_solve) (const Euler *inEuler, size_t max_iter, double *xn);
+    Euler_Err (*modified_euler_solve) (const Euler *inEuler, size_t max_iter, double *xn);
 }EulerAPI;
 
 
