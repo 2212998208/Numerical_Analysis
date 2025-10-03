@@ -55,6 +55,10 @@ set(RK4
     main.c
     src/RK4.c
 )
+set(GAUSSIAN
+    main.c
+    src/gaussian.c
+)
 set(TESTS_INTEGRATOR
     src/integrator.c
     tests/test_integrator.c
@@ -108,6 +112,10 @@ set(TESTS_RK4
     src/RK4.c
     tests/test_RK4.c
 )
+set(TESTS_GAUSSIAN
+    src/gaussian.c
+    tests/test_gaussian.c
+)
 #===================================================================
 add_executable(Numerical_Analysis
                ${INTEGRATOR}
@@ -123,6 +131,7 @@ add_executable(Numerical_Analysis
                ${DS}
                ${EULER}
                ${RK4}
+               ${GAUSSIAN}
 )
 
 target_include_directories(Numerical_Analysis PRIVATE include)
@@ -250,5 +259,13 @@ add_executable(Numerical_Analysis_tests_rk4
             ${TESTS_RK4})
 target_include_directories(Numerical_Analysis_tests_rk4 PRIVATE include)
 add_test(NAME Numerical_Analysis_tests_rk4 COMMAND Numerical_Analysis_tests_rk4)
+#===================================================================
+
+#===================================================================
+# 测试gaussian
+add_executable(Numerical_Analysis_tests_gaussian
+            ${TESTS_GAUSSIAN})
+target_include_directories(Numerical_Analysis_tests_gaussian PRIVATE include)
+add_test(NAME Numerical_Analysis_tests_gaussian COMMAND Numerical_Analysis_tests_gaussian)
 #===================================================================
 
